@@ -8,7 +8,7 @@ services:
   zabbix-pg-db:
     container_name: zabbix-pg-db
     platform: linux/amd64
-    image: timescale/timescaledb:latest-pg12
+    image: timescale/timescaledb:latest-pg13
     networks:
       - network-zabbix
     ports:
