@@ -9,6 +9,7 @@ services:
     container_name: zabbix-pg-db
     platform: linux/amd64
     image: timescale/timescaledb:latest-pg13
+    command: postgres -c 'max_connections=200'
     networks:
       - network-zabbix
     ports:
