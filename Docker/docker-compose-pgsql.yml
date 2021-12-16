@@ -34,6 +34,7 @@ services:
     volumes:
       - './zabbix/alertscripts:/usr/lib/zabbix/alertscripts'
     environment:
+      - ZBX_NODEADDRESS=zabbix-server
       - DB_SERVER_HOST=zabbix-pg-db
       - POSTGRES_USER=zabbix
       - POSTGRES_PASSWORD=zabbixfg
@@ -56,6 +57,7 @@ services:
     volumes:
       - './zabbix/alertscripts:/usr/lib/zabbix/alertscripts'
     environment:
+      - ZBX_NODEADDRESS=zabbix-server02
       - DB_SERVER_HOST=zabbix-pg-db
       - POSTGRES_USER=zabbix
       - POSTGRES_PASSWORD=zabbixfg
