@@ -38,6 +38,30 @@ services:
       - POSTGRES_USER=zabbix
       - POSTGRES_PASSWORD=zabbixfg
       - POSTGRES_DB=zabbix
+      - ENABLE_TIMESCALEDB=true
+      - ZBX_HANODENAME=zabbix1
+    depends_on:
+      - zabbix-pg-db
+
+  zabbix-server02:
+    container_name: zabbix-server02
+    image: zabbix/zabbix-server-pgsql:ubuntu-trunk
+    networks:
+      - network-zabbix
+    links:
+      - zabbix-pg-db
+    restart: always
+    ports:
+      - '10052:10051'
+    volumes:
+      - './zabbix/alertscripts:/usr/lib/zabbix/alertscripts'
+    environment:
+      - DB_SERVER_HOST=zabbix-pg-db
+      - POSTGRES_USER=zabbix
+      - POSTGRES_PASSWORD=zabbixfg
+      - POSTGRES_DB=zabbix
+      - ENABLE_TIMESCALEDB=true
+      - ZBX_HANODENAME=zabbix2
 
     depends_on:
       - zabbix-pg-db
@@ -55,7 +79,6 @@ services:
       - '443:8443'
     environment:
       - DB_SERVER_HOST=zabbix-pg-db
-      - ZBX_SERVER_HOST=zabbix-server
       - POSTGRES_USER=zabbix
       - POSTGRES_PASSWORD=zabbixfg
       - POSTGRES_DB=zabbix
@@ -95,4 +118,4 @@ services:
       - '10050:10050'
     environment:
       - ZBX_HOSTNAME=Zabbix server
-      - ZBX_SERVER_HOST=172.18.0.1
+      - ZBX_SERVER_HOST=172.24.0.4
