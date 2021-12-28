@@ -5,9 +5,25 @@ networks:
     driver: bridge
 
 services:
+  traefik:
+    image: traefik:v2.5.5
+    command:
+      - --log.level=INFO
+      - --api.insecure=true
+      - --entrypoints.web.address=:80
+      - --providers.docker
+    networks:
+      - "network-zabbix"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      traefik.http.routers.traefik.rule: Host(`dash.localhost`)
+      traefik.http.routers.traefik.service: api@internal
+    ports:
+      - "80:80"
+
   zabbix-pg-db:
     container_name: zabbix-pg-db
-    platform: linux/amd64
     image: timescale/timescaledb:latest-pg13
     command: postgres -c 'max_connections=200'
     networks:
@@ -76,15 +92,15 @@ services:
     links:
       - zabbix-pg-db
     restart: always
-    ports:
-      - '80:8080'
-      - '443:8443'
     environment:
       - DB_SERVER_HOST=zabbix-pg-db
       - POSTGRES_USER=zabbix
       - POSTGRES_PASSWORD=zabbixfg
       - POSTGRES_DB=zabbix
       - PHP_TZ=America/Sao_Paulo
+      - ZBX_SERVER_NAME=ZBX Stack
+    labels: # auto-detect port 80 in next line
+      traefik.http.routers.zabbix.rule: Host(`zabbix.localhost`)
     depends_on:
       - zabbix-pg-db
    
@@ -97,13 +113,17 @@ services:
       - zabbix-pg-db
       - zabbix-server
     restart: always
-    ports:
-      - '3000:3000'
     environment: 
       - GF_INSTALL_PLUGINS=alexanderzobnin-zabbix-app
+    labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.grafana.rule=Host(`grafana.localhost`)"
+        - "traefik.http.routers.grafana.entrypoints=web"    
+        - "traefik.http.services.grafana.loadbalancer.server.port=3000"
     depends_on:
       - zabbix-pg-db
       - zabbix-server
+
   zabbix-agent:
     container_name: zabbix-agent
     image: zabbix/zabbix-agent2:alpine-trunk
@@ -112,6 +132,7 @@ services:
       - network-zabbix
     links:
       - zabbix-server
+      - zabbix-server02
     restart: always
     privileged: true
     volumes:
@@ -120,4 +141,4 @@ services:
       - '10050:10050'
     environment:
       - ZBX_HOSTNAME=Zabbix server
-      - ZBX_SERVER_HOST=172.24.0.4
+      - ZBX_SERVER_HOST=zabbix-server,zabbix-server02
