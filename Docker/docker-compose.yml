@@ -9,7 +9,7 @@ services:
     networks:
       - network-zabbix
     volumes:
-      - './zabbix/pgsql:/var/lib/postgresql/data'
+      - '/Users/fabricio/VSCode/Zabbix/Docker/zabbix/pgsql:/var/lib/postgresql/data'
     environment:
       POSTGRES_DB: zabbix
       POSTGRES_USER: zabbix
@@ -32,7 +32,7 @@ services:
       - '8123:8123'
       - '9000:9000'
     volumes:
-      - './zabbix/clickhouse:/var/lib/clickhouse'
+      - '/Users/fabricio/VSCode/Zabbix/Docker/zabbix/clickhouse:/var/lib/clickhouse'
     environment:
       CLICKHOUSE_DB: zabbix
       CLICKHOUSE_USER: zabbix
@@ -49,7 +49,7 @@ services:
     ports:
       - '10051:10051'
     volumes:
-      - './zabbix/alertscripts:/usr/lib/zabbix/alertscripts'
+      - '/Users/fabricio/VSCode/Zabbix/Docker/zabbix/alertscripts:/usr/lib/zabbix/alertscripts'
     environment:
       DB_SERVER_HOST: postgres
       POSTGRES_DB: zabbix
@@ -90,6 +90,8 @@ services:
     restart: always
     ports:
       - '3000:3000'
+    volumes:
+      - '/Users/fabricio/VSCode/Zabbix/Docker/zabbix/grafana:/var/lib/grafana'
     environment:
       GF_INSTALL_PLUGINS: alexanderzobnin-zabbix-app
     depends_on:
