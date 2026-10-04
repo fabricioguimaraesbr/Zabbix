@@ -1,5 +1,6 @@
 networks:
   network-zabbix:
+    name: zabbix-network
     driver: bridge
 
 services:
