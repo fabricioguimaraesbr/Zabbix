@@ -42,7 +42,7 @@ services:
 
   zabbix-server:
     container_name: zabbix-server
-    image: zabbix/zabbix-server-pgsql:latest
+    image: zabbix/zabbix-server-pgsql:alpine-trunk
     networks:
       - network-zabbix
     restart: always
@@ -61,7 +61,7 @@ services:
 
   zabbix-frontend:
     container_name: zabbix-frontend
-    image: zabbix/zabbix-web-nginx-pgsql:latest
+    image: zabbix/zabbix-web-nginx-pgsql:alpine-trunk
     networks:
       - network-zabbix
     restart: always
@@ -98,7 +98,7 @@ services:
 
   zabbix-agent:
     container_name: zabbix-agent
-    image: zabbix/zabbix-agent2:latest
+    image: zabbix/zabbix-agent2:alpine-trunk
     user: root
     networks:
       - network-zabbix
